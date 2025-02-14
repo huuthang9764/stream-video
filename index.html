@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Video Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            height: 100vh; /* Chiều cao toàn màn hình */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            align-items: center; /* Căn giữa theo chiều ngang */
+            margin: 0;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        video {
+            display: none; /* Ẩn video ban đầu */
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+            width: 640px;
+            height: 360px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ff5722;
+            color: white;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <h2>HLS Video Streaming</h2>
+    <button id="playButton">Phát video</button>
+    <video id="video" controls></video>
+
+    <script>
+        var video = document.getElementById('video');
+        var playButton = document.getElementById('playButton');
+        var videoSrc = "https://98c6-2401-d800-7987-f435-f99d-d847-bf44-9ac4.ngrok-free.app/hls/c4234a57f8a8df37165aad6b67242b28/index.m3u8";
+
+        playButton.addEventListener('click', function () {
+            video.style.display = "block"; // Hiển thị video
+            playButton.style.display = "none"; // Ẩn nút khi video bắt đầu phát
+
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    video.play();
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', function () {
+                    video.play();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
